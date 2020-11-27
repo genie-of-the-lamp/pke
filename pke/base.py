@@ -23,6 +23,8 @@ from six import string_types
 
 from builtins import str
 
+from pke.korean import KoreanRawTextReader
+
 
 # The language management should be in `pke.utils` but it would create a circular import.
 
@@ -164,10 +166,16 @@ class LoadFile(object):
             path = input
             with open(path, encoding=kwargs.get('encoding', 'utf-8')) as f:
                 input = f.read()
-            parser = RawTextReader(language=language)
+            if language == 'kr':
+                parser = KoreanRawTextReader(**kwargs)
+            else:
+                parser = RawTextReader(language=language)
             doc = parser.read(text=input, path=path, **kwargs)
         elif isinstance(input, str):
-            parser = RawTextReader(language=language)
+            if language == 'kr':
+                parser = KoreanRawTextReader(**kwargs)
+            else:
+                parser = RawTextReader(language=language)
             doc = parser.read(text=input, **kwargs)
         else:
             logging.error('Cannot process input. It is neither a file path '
